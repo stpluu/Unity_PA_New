@@ -62,6 +62,7 @@ public class WorldScript : MonoBehaviour {
 
     public int stageMaxDistance_;	//스테이지 전체 길이
     public int stageMaxTime_;		//스테이지 제한시간
+	
     private StageStyle stageStyle_;	//스테이지 종류 (숲/눈/황무지/동굴/남극/수중/수면...)
 
     private GameObject backGround_;	//배경 오브젝트
@@ -101,6 +102,8 @@ public class WorldScript : MonoBehaviour {
     private List<MapObjectStruct> objectList_;  //맵 오브젝트 리스트
 
 	private List<MapMonsterStruct> monsterList_;
+
+	public Dictionary<int, int> sellItemList_ { get; set; }	//해당스테이지에서 판매하는 아이템/가격(일반상점기준)
 
 	private int speedKeyInputTime_;     //스피드 업/다운 키를 누른 시간
 
@@ -159,6 +162,15 @@ public class WorldScript : MonoBehaviour {
 				for (int i = 0; i < Constant.Number_BackGroundImg; ++i)
 				{
 					string spriteName = string.Format("Sprites/Cave/BG_{0:D2}", i + 1);
+
+					bgSprites_[i] = Resources.Load(spriteName, typeof(Sprite)) as Sprite;
+				}
+				backGround_.GetComponent<SpriteRenderer>().sprite = bgSprites_[currentBgNum_];
+				break;
+			case StageStyle.IceWorld:
+				for (int i = 0; i < Constant.Number_BackGroundImg; ++i)
+				{
+					string spriteName = string.Format("Sprites/Ice_World/BG_{0:D2}", i + 1);
 
 					bgSprites_[i] = Resources.Load(spriteName, typeof(Sprite)) as Sprite;
 				}
@@ -312,6 +324,10 @@ public class WorldScript : MonoBehaviour {
 
 		return true;
 	}
+	public void addShopItem(int itemID, int goodShopPrice)
+	{
+		sellItemList_[itemID] = goodShopPrice;
+	}
 	void CreateObjects()
     {
       
@@ -325,6 +341,8 @@ public class WorldScript : MonoBehaviour {
 		bGoal_ = false;
 		objectList_ = new List<MapObjectStruct>();
 		monsterList_ = new List<MapMonsterStruct>();
+		sellItemList_ = new Dictionary<int, int>();
+
 	}
     void Start () {
 
@@ -612,7 +630,6 @@ public class WorldScript : MonoBehaviour {
 			default:
 				return (float)hPos * 1.0f;
 		}
-		return 0.0f;
 	}
 	float calcMonsterZPos(Constant.MapMonsters objType, int dist)
 	{
@@ -625,7 +642,6 @@ public class WorldScript : MonoBehaviour {
 			default:
 				return distFromCurPos * 4.0f;
 		}
-		return 0.0f;
 	}
 
 	// 

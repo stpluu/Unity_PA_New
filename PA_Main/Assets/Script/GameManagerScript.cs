@@ -518,6 +518,11 @@ public class GameManagerScript : MonoBehaviour {
 	}
 	public bool BuyItem(Constant.ItemDef item, int price)
 	{
+		if (price < 0)
+		{
+			Debug.Log("Try buy item error : " + item.ToString() + "[" + price + "]");
+			return false;
+		}
 		if (fishCount_ >= price
 			//&& itemInventory_[(int)item] == 0)
 			//&& ItemInven_.GetItemState(item) == Constant.ItemState.None)

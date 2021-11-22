@@ -10,6 +10,7 @@ TagManager:
   - Crack
   - Monster
   - Bullet
+  - Boss
   layers:
   - Default
   - TransparentFX

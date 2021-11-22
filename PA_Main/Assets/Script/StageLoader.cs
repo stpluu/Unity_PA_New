@@ -21,6 +21,7 @@ public class StageLoader : MonoBehaviour {
 		stage,
 		objects,
 		monsters,
+		shop,
 		NONE,
 	}
 	
@@ -93,6 +94,9 @@ public class StageLoader : MonoBehaviour {
 					case TagType.stage:
 						ProcessStageLine(currentLine);
 						break;
+					case TagType.shop:
+
+						break;
 					case TagType.NONE:
 					default:
 						{
@@ -156,8 +160,32 @@ public class StageLoader : MonoBehaviour {
 		{
 			return TagType.monsters;
 		}
+		if (data.Equals("<shop>"))
+		{
+			return TagType.shop;
+		}
 		return TagType.NONE;
 	}
+	private bool ProcessShopLine(string data)
+	{
+		string[] oneData = data.Split(new char[] { ','});
+		
+		{
+			int itemID = 0;
+			int goodShopPrice = 0;
+			if (int.TryParse(oneData[0], out itemID) == false)
+			{
+				ParseError("shop ", " itemID Error");
+			}
+			if (int.TryParse(oneData[1], out goodShopPrice) == false)
+			{
+				ParseError("shop ", " item price Error");
+			}
+			worldScript_.addShopItem(itemID, goodShopPrice);
+		}
+		return true;
+	}
+
 	private bool ProcessObjectLine(string data)
 	{
 		string[] oneData = data.Split(new char[] { ',' });

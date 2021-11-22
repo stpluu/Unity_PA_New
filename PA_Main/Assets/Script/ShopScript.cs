@@ -39,17 +39,14 @@ public class ShopScript : MonoBehaviour {
 	GameObject currentClickedItem_;
 	GameObject selectRect_;
 	GameManagerScript gameManagerScript_;
+	WorldScript worldScript_;
 	//해당 스테이지에서 파는 아이템
-	public static readonly int[,] stageSellItem_ = {
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	};
 	private void Awake()
 	{
 		shopUI_ = GameObject.Find("ShopUI");
 		gameManagerScript_ = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
+		worldScript_ = gameObject.GetComponent<WorldScript>();
 		selectRect_ = shopUI_.transform.Find("SelectRect").gameObject;
 	}
 	// Use this for initialization
@@ -93,25 +90,33 @@ public class ShopScript : MonoBehaviour {
 	{
 		currentClickedItem_ = null;
 		selectRect_.SetActive(false);
+//		for (int i = 0; i < (int)Constant.ItemDef.TOTALITEMCOUNT; ++i)
+//		{
+//			
+//			{
+//				//if (stageSellItem_[shopStage_, i] == 0
+//				//	|| gameManagerScript_.isBoughtItem((Constant.ItemDef)i) == true)
+//				{
+//					ChangeItemBtnState(i, false);
+//				}
+//				else
+//				{
+//					ChangeItemBtnState(i, true);
+//					
+//					
+//				}
+//			}
+//				
+//		}
 		for (int i = 0; i < (int)Constant.ItemDef.TOTALITEMCOUNT; ++i)
 		{
-			//ItemControlName = string.Format("Item_{0}", i);
-			//GameObject itemBtn = shopUI_.transform.Find(ItemControlName).gameObject;
-			//if (itemBtn != null)
+			
+			if (worldScript_.sellItemList_.TryGetValue(i, out int price))
 			{
-				if (stageSellItem_[shopStage_, i] == 0
-					|| gameManagerScript_.isBoughtItem((Constant.ItemDef)i) == true)
-				{
-					ChangeItemBtnState(i, false);
-				}
-				else
-				{
-					ChangeItemBtnState(i, true);
-					
-					
-				}
+				ChangeItemBtnState(i, gameManagerScript_.isBoughtItem((Constant.ItemDef)i) == false);
 			}
-				
+			else
+				ChangeItemBtnState(i, false);
 		}
 		shopUI_.transform.Find("SlotMachineUI").gameObject.SetActive(false);
 	}
@@ -171,16 +176,20 @@ public class ShopScript : MonoBehaviour {
 
 	public int calcItemPrice(Constant.ItemDef item)
 	{
-		switch (shopType_)
+		if (worldScript_.sellItemList_.TryGetValue((int)item, out int price))
 		{
+			switch (shopType_)
+			{
 			case Constant.MapObjects.SHOP_NORMAL:
-				return Constant.itemPrice_[(int)item];
+				return price;
 			case Constant.MapObjects.SHOP_EXPENSIVE:
-				return Constant.itemPrice_[(int)item] * 2;
+				return price * 2;
 			case Constant.MapObjects.SHOP_SANTA:
-				return 0;
+				return 0;	
+			}	
 		}
-		return 0;
+		
+		return -1;
 	}
 	public void SetShopUIVisible(bool bVisible)
 	{
