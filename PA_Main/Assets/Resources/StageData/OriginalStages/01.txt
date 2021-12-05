@@ -69,7 +69,7 @@ distance=600
 537,crack,-1
 543,crack,1
 565,crack,-1
-600,goal,0
+600,boss,0
 </objects>
 <monsters>
 50,ball,-1

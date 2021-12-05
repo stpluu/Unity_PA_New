@@ -5101,8 +5101,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 866585245}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 56.68203, y: 65.88949, z: 75.95156}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 56.682034, y: 65.88949, z: 75.95156}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -9344,6 +9344,8 @@ MonoBehaviour:
   curveDirection_: 0
   stageMaxDistance_: 0
   stageMaxTime_: 0
+  isBossStage_: 0
+  bossFightStartTime_: 0
 --- !u!114 &1939140892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9374,6 +9376,13 @@ MonoBehaviour:
   monsterBat_: {fileID: 0}
   monsterCloud_: {fileID: 0}
   monsterSquid_: {fileID: 0}
+  boss_: {fileID: 2329390839519929935, guid: a199f06706ca2314c906c1907d4a6dea, type: 3}
+  bossHole_: {fileID: 1247551260374426018, guid: 193fbf52e949601449de2445732198db,
+    type: 3}
+  bossPin_: {fileID: 7402663075653491519, guid: cdb2e8b4ab98abe4990dfd37420844ce,
+    type: 3}
+  bossFire_: {fileID: 3467522289975163456, guid: 980a8155a203c7a4486636f833dfe2a2,
+    type: 3}
   fishPool_: []
   bulletPool_: []
   heartPool_: []
@@ -9383,8 +9392,12 @@ MonoBehaviour:
   rockPool_: []
   shopPool_: []
   monsterBallPool_: []
+  bossPinPool_: []
+  bossFirePool_: []
   goalObject_: {fileID: 0}
+  bossObject_: {fileID: 0}
   fishCount_: 0
+  bInBossFight_: 0
 --- !u!114 &1939140893
 MonoBehaviour:
   m_ObjectHideFlags: 0

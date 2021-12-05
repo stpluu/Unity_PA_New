@@ -95,7 +95,7 @@ public class StageLoader : MonoBehaviour {
 						ProcessStageLine(currentLine);
 						break;
 					case TagType.shop:
-
+						ProcessShopLine(currentLine);
 						break;
 					case TagType.NONE:
 					default:
@@ -240,6 +240,15 @@ public class StageLoader : MonoBehaviour {
 			if (int.TryParse(oneData[1], out stageDistance))
 			{
 				worldScript_.stageMaxDistance_ = stageDistance;
+			}
+		}
+		if (oneData[0].Equals("boss"))
+		{
+			int bossLevel = 0;
+			if (int.TryParse(oneData[1], out bossLevel))
+			{
+				worldScript_.isBossStage_ = true;
+				//bossLevel todo
 			}
 		}
 		return true;

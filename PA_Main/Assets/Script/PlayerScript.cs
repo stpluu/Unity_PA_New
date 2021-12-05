@@ -278,10 +278,15 @@ public class PlayerScript : MonoBehaviour {
 					}
 				
 				}
+				
 				if (characterState_ == CharacterStates.JUMP_DOWN
 					|| characterState_ == CharacterStates.JUMP_UP)
 				{
 					gameManagerScript_.ChangeHeartColor();
+				}
+				if (characterState_ == CharacterStates.JUMP_DOWN)
+				{
+					gameManagerScript_.OnCharacterLanding(gameObject.transform.position);
 				}
                 characterPosition_.y = 0.0f;
                 break;

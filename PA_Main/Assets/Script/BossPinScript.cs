@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,7 +43,8 @@ public class BossPinScript : MonoBehaviour {
         if (currentDepth_ < Constant.needDepth)
         {
             currentDepth_++;
-            
+            string spriteName = string.Format("Sprites/Boss/boss_point_{0:D1}", (Constant.needDepth - currentDepth_));
+            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load(spriteName, typeof(Sprite)) as Sprite;
         }
     }
 }

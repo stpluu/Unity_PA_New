@@ -34,7 +34,7 @@ public partial class Constant
 };
 public class ShopScript : MonoBehaviour {
 	Constant.MapObjects shopType_;
-	public int shopStage_;
+	//public int shopStage_;
 	GameObject shopUI_;
 	GameObject currentClickedItem_;
 	GameObject selectRect_;
@@ -46,7 +46,7 @@ public class ShopScript : MonoBehaviour {
 	{
 		shopUI_ = GameObject.Find("ShopUI");
 		gameManagerScript_ = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
-		worldScript_ = gameObject.GetComponent<WorldScript>();
+		worldScript_ = GameObject.Find("GameManager").GetComponent<WorldScript>();
 		selectRect_ = shopUI_.transform.Find("SelectRect").gameObject;
 	}
 	// Use this for initialization
@@ -77,14 +77,14 @@ public class ShopScript : MonoBehaviour {
 		}
 	}
 
-	public void SetShopStage(int stage)
-	{
+//	public void SetShopStage(int stage)
+//	{
 
-		shopStage_ = stage;
+//		shopStage_ = stage;
 		// temp..
-		if (shopStage_ > 2)
-			shopStage_ = 2;
-	}
+//		if (shopStage_ > 2)
+//			shopStage_ = 2;
+//	}
 	
 	private void OnEnable()
 	{
@@ -111,7 +111,9 @@ public class ShopScript : MonoBehaviour {
 		for (int i = 0; i < (int)Constant.ItemDef.TOTALITEMCOUNT; ++i)
 		{
 			
-			if (worldScript_.sellItemList_.TryGetValue(i, out int price))
+			if (worldScript_ != null
+			 && worldScript_.sellItemList_ != null
+			 && worldScript_.sellItemList_.TryGetValue(i, out int price))
 			{
 				ChangeItemBtnState(i, gameManagerScript_.isBoughtItem((Constant.ItemDef)i) == false);
 			}

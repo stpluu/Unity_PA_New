@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 static partial class Constant
 {
     public const int Distance_ObjectAppear_ =  15;
@@ -32,6 +33,7 @@ static partial class Constant
 		SPECIAL_2,
 		SPECIAL_3,
 		WING,
+		BOSS_PIN,
 	};
 	public enum MapMonsters
 	{
@@ -39,7 +41,8 @@ static partial class Constant
 		BAT,
 		CLOUD,
 		SQUID,
-		BOSS,
+//		BOSS,
+		BOSS_FIRE,
 	};
 }
 public class WorldScript : MonoBehaviour {
@@ -63,6 +66,8 @@ public class WorldScript : MonoBehaviour {
     public int stageMaxDistance_;	//스테이지 전체 길이
     public int stageMaxTime_;		//스테이지 제한시간
 	
+	public bool isBossStage_;
+	public float bossFightStartTime_;
     private StageStyle stageStyle_;	//스테이지 종류 (숲/눈/황무지/동굴/남극/수중/수면...)
 
     private GameObject backGround_;	//배경 오브젝트
@@ -303,11 +308,12 @@ public class WorldScript : MonoBehaviour {
 		MapMonsterStruct obj = new MapMonsterStruct();
 
 		///////////////////////////////////////////////////////////////
-		if (monsterType.Equals("boss"))
-		{
-			obj.monsterType_ = Constant.MapMonsters.BOSS;
-		}
-		else if (monsterType.Equals("ball"))
+//		if (monsterType.Equals("boss"))
+//		{
+//			obj.monsterType_ = Constant.MapMonsters.BOSS;
+//		}
+//		else 
+		if (monsterType.Equals("ball"))
 		{
 			obj.monsterType_ = Constant.MapMonsters.BALL;
 		}
@@ -326,6 +332,7 @@ public class WorldScript : MonoBehaviour {
 	}
 	public void addShopItem(int itemID, int goodShopPrice)
 	{
+		Debug.Log("add shop Item : " + itemID.ToString() + " / " + goodShopPrice.ToString());
 		sellItemList_[itemID] = goodShopPrice;
 	}
 	void CreateObjects()
@@ -337,8 +344,11 @@ public class WorldScript : MonoBehaviour {
     {
         backGround_ = GameObject.FindWithTag("Background");
         currentBgNum_ = 0;
+		isBossStage_ = false;
+		bossFightStartTime_ = 0.0f;
         bgSprites_ = new Sprite[Constant.Number_BackGroundImg];
 		bGoal_ = false;
+
 		objectList_ = new List<MapObjectStruct>();
 		monsterList_ = new List<MapMonsterStruct>();
 		sellItemList_ = new Dictionary<int, int>();
@@ -526,12 +536,28 @@ public class WorldScript : MonoBehaviour {
         }
 		UpdateMonsterPosition(FrameDistance);//몬스터는 매프레임 위치 갱신
 		// 최종 거리 도달할경우 골인 처리 시작
+
 		if (bGoal_ == false
 			&& distance_ >= stageMaxDistance_ )
 		{
-			bGoal_ = true;
+			if (isBossStage_)
+			{
+				if (bossFightStartTime_ == 0.0f)
+					bossFightStartTime_ = Time.time;
+			}
+			else
+			{
+				bGoal_ = true;
+				distance_ = stageMaxDistance_;
+			
+				GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().OnGoal();
+			}
+			
+		}
+		// 보스 조우했을경우 남은거리 0 고정
+		if (bossFightStartTime_ > 0.0f)
+		{
 			distance_ = stageMaxDistance_;
-			GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().OnGoal();
 		}
     }
 

@@ -26,6 +26,13 @@ public class GameManagerScript : MonoBehaviour {
 	public GameObject monsterBat_;
 	public GameObject monsterCloud_;
 	public GameObject monsterSquid_;
+	public GameObject boss_;
+	public GameObject bossHole_;
+	
+	public GameObject bossPin_;
+
+	public GameObject bossFire_;
+
 
 	// Item / monster / bullet pool
     public GameObject[] fishPool_;
@@ -39,7 +46,11 @@ public class GameManagerScript : MonoBehaviour {
 	public GameObject[] rockPool_;
 	public GameObject[] shopPool_;
 	public GameObject[] monsterBallPool_;
+
+	public GameObject[] bossPinPool_;
+	public GameObject[] bossFirePool_;
 	public GameObject goalObject_;
+	public GameObject bossObject_;
 
 	private const int FISH_INSCREEN_MAX_NUM = 10;
 	private const int HEART_INSCREEN_MAX_NUM = 4;
@@ -51,6 +62,9 @@ public class GameManagerScript : MonoBehaviour {
 	private const int MONSTER_INSCREEN_MAX_NUM = 5;
 
 	private const int BULLET_INSCREEN_MAX_NUM = 3;
+
+	private const int BOSS_PIN_COUNT = 4;
+	private const int BOSS_FIRE_MAX_COUNT = 6;
 
 	[SerializeField] private int fishCount_;	//player 가 소지한 fish 수
 
@@ -67,6 +81,9 @@ public class GameManagerScript : MonoBehaviour {
 	bool bInShop_;
 	bool bPause_;
 	bool bDie_;
+
+	float bossFightTime_;
+	public bool bInBossFight_;
 	bool bShowingStageStartMap_;
 	private float mapShowingTime_;
 
@@ -131,6 +148,8 @@ public class GameManagerScript : MonoBehaviour {
 
 		monsterBallPool_ = new GameObject[MONSTER_INSCREEN_MAX_NUM];
 
+		bossPinPool_ = new GameObject[BOSS_PIN_COUNT];
+		bossFirePool_ = new GameObject[BOSS_FIRE_MAX_COUNT];
 		DebugText_ = GameObject.Find("UI").transform.Find("Debug").GetComponent<Text>();
 
 		//itemInventory_ = new int[(int)Constant.ItemDef.TOTALITEMCOUNT];
@@ -158,6 +177,8 @@ public class GameManagerScript : MonoBehaviour {
 		//instantiate
 		goalObject_ = Instantiate(goal_, Vector3.zero, Quaternion.identity) as GameObject;
 		goalObject_.SetActive(false);
+		bossObject_ = Instantiate(boss_, Vector3.zero, Quaternion.identity) as GameObject;
+		bossObject_.SetActive(false);
 		for (int i = 0; i < FISH_INSCREEN_MAX_NUM; ++i)
 		{
 			fishPool_[i] = Instantiate(fish_, Vector3.zero, Quaternion.identity) as GameObject;
@@ -204,7 +225,16 @@ public class GameManagerScript : MonoBehaviour {
 			shopPool_[i] = Instantiate(shop_, Vector3.zero, Quaternion.identity) as GameObject;
 			shopPool_[i].SetActive(false);
 		}
-
+		for (int i = 0 ; i < BOSS_PIN_COUNT; ++i)
+		{
+			bossPinPool_[i] = Instantiate(bossPin_, Vector3.zero, Quaternion.identity) as GameObject;
+			bossPinPool_[i].SetActive(false);
+		}
+		for (int i = 0 ; i < BOSS_FIRE_MAX_COUNT; ++i)
+		{
+			bossFirePool_[i] = Instantiate(bossFire_, Vector3.zero, Quaternion.identity)as GameObject;
+			bossFirePool_[i].SetActive(false);
+		}
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Monster
 		for (int i = 0; i < MONSTER_INSCREEN_MAX_NUM; ++i)
@@ -213,7 +243,7 @@ public class GameManagerScript : MonoBehaviour {
 			monsterBallPool_[i].SetActive(false);
 		}
 		bInGoal_ = false;
-
+		
 		/// for debug
 		if (getCurrentStage() < 1
 			|| getCurrentStage() > 2)
@@ -221,12 +251,14 @@ public class GameManagerScript : MonoBehaviour {
 		/// 
 
 		stageLoader_.LoadStage(StageLoader.GameMode.orignal, getCurrentStage());
-		shopScript_.SetShopStage(getCurrentStage());
+//		shopScript_.SetShopStage(getCurrentStage());
 		shopScript_.SetShopUIVisible(false);
 		pauseTime_ = 0.0f;
 		bInShop_ = false;
 		bPause_ = false;
 		bDie_ = false;
+		bInBossFight_ = false;
+		bossFightTime_ = 0.0f;
 		refreshInventoryUI();
 	}
 	
@@ -243,6 +275,10 @@ public class GameManagerScript : MonoBehaviour {
 		if (bShowingStageStartMap_ == true)
 		{
 			ProcShowingMap();
+		}
+		if (bInBossFight_)
+		{
+			ProcBossFight();
 		}
 	}
    
@@ -396,6 +432,17 @@ public class GameManagerScript : MonoBehaviour {
 				{
 					return GetHeartInstance();
 				}
+			case Constant.MapObjects.BOSS:
+				return bossObject_;
+			case Constant.MapObjects.BOSS_PIN:
+				foreach (GameObject obj in bossPinPool_)
+				{
+					if (obj.activeSelf == false)
+					{
+						return obj;
+					}
+				}
+				break;
 			default:
 				// not yet ... return crack object
 				foreach (GameObject obj in crackPool_)
@@ -416,7 +463,7 @@ public class GameManagerScript : MonoBehaviour {
 		{
 			case Constant.MapMonsters.BALL:
 				foreach (GameObject obj in monsterBallPool_)
-						{
+				{
 					if (obj.activeSelf == false)
 					{
 						return obj;
@@ -425,7 +472,17 @@ public class GameManagerScript : MonoBehaviour {
 				break;
 			case Constant.MapMonsters.BAT:
 				break;
-			case Constant.MapMonsters.BOSS:
+//			case Constant.MapMonsters.BOSS:
+//				return bossObject_;
+	
+			case Constant.MapMonsters.BOSS_FIRE:
+				foreach (GameObject obj in bossFirePool_)
+				{
+					if (obj.activeSelf == false)
+					{
+						return obj;
+					}
+				}
 				break;
 			default:
 				break;
@@ -627,7 +684,61 @@ public class GameManagerScript : MonoBehaviour {
 			Time.timeScale = 1.0f;
 		}
 	}
+	public void ProcBossFight()
+	{
+		playerScript_.speed_ = 0;
+		bool isBossFinished = true;
+		for (int i = 0; i < BOSS_PIN_COUNT; ++i)
+		{
+			if (bossPinPool_[i].GetComponent<BossPinScript>().currentDepth_ < Constant.needDepth)
+			{
+				isBossFinished = false;
+			}
+		}
+		if (boss_.GetComponent<BossScript>().currentHp_ > 0)
+		{
+			isBossFinished = false;
+		}
+		if (isBossFinished)
+		{
+			
+		}
+	}	
+	public void OnMeetBoss()
+	{
+		bossFightTime_ = Time.time;
+		bInBossFight_ = true;
+		// start drop pin
+		for (int i = 0; i < BOSS_PIN_COUNT; ++i)
+		{
+			Vector3 pinPos = new Vector3(-3.0f + i*2.0f, 0.0f, 5.0f + 0.2f * i);
+			bossPinPool_[i].transform.position = pinPos;
+			bossPinPool_[i].GetComponent<Rigidbody2D>().gravityScale = 1.0f;
+			bossPinPool_[i].SetActive(true);
+		}
+		
+	}
 
+	public void OnCharacterLanding(Vector3 charPos)
+	{
+		if (bInBossFight_)
+		{
+			for (int i = 0; i < BOSS_PIN_COUNT; ++i)
+			{
+				if (Mathf.Abs(charPos.x - bossPinPool_[i].transform.position.x) < 0.2f)
+				{
+					bossPinPool_[i].GetComponent<BossPinScript>().OnCharacterLanding();
+				}
+				
+			}
+		}
+
+	}
+
+	public void OnBossAttackStart(Vector3 fireStartPos)
+	{
+	
+	}
 	public void refreshInventoryUI()
 	{
 		for (int i = 0; i < (int)Constant.InventoryMaxSize; ++i)
