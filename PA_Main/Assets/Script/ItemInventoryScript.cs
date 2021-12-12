@@ -34,7 +34,7 @@ public class ItemInventoryScript : MonoBehaviour {
 		}
 		else if (instance != this)
 		{
-			Destroy(gameObject);
+			//Destroy(gameObject);
 		}
 		DontDestroyOnLoad(gameObject);
 		itemInventory_ = new Constant.ItemState[(int)Constant.ItemDef.TOTALITEMCOUNT];

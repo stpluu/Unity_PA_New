@@ -17,11 +17,18 @@ public class BossPinScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        if (transform.position.y <= 0.0f)
+		{
+            
+            Vector3 pos = new Vector3(transform.position.x, 0.0f, transform.position.z);
+            transform.position = pos;
+            GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, 0.0f, 0.0f), ForceMode.VelocityChange);
+		}
 	}
     private void OnEnable()
     {
         currentDepth_ = 0;
+        GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, -6.0f, 0.0f), ForceMode.VelocityChange);
     }
     private void OnTriggerEnter(Collider other)
     {

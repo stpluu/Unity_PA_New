@@ -428,11 +428,24 @@ public class WorldScript : MonoBehaviour {
 				{
 					mapObj.object_.GetComponent<ShopHoleScript>().SetShopType(mapObj.objectType_);
 				}
+				//if (mapObj.objectType_ != Constant.MapObjects.BOSS)
 				mapObj.object_.SetActive(true);
 			}
 			if (IsItemObject(mapObj.objectType_))
 			{
 				mapObj.isPassed_ = true;
+			}
+			else if (mapObj.objectType_ == Constant.MapObjects.BOSS_PIN)
+			{
+
+			}
+			else if (mapObj.objectType_ == Constant.MapObjects.BOSS)
+			{
+				// 보스 x축은 이동 스스로 처리함
+				curPostionVector.x = mapObj.object_.transform.position.x;
+				curPostionVector.y = calcObjectYPos(mapObj.objectType_, mapObj.distance_);
+				curPostionVector.z = calcObjectZpos(mapObj.objectType_, mapObj.distance_);
+				mapObj.object_.transform.position = curPostionVector;
 			}
 			else
 			{
@@ -464,7 +477,9 @@ public class WorldScript : MonoBehaviour {
 		{
 
 			MapMonsterStruct mapMon = monsterList_[i];
-			
+
+			if (mapMon.monsterType_ == Constant.MapMonsters.BOSS_FIRE)
+				continue;
 			//너무 멀리 있는 오브젝트 패스
 			if (iDistance < mapMon.distance_ - Constant.Distance_ObjectAppear_)
 				break;
@@ -496,7 +511,7 @@ public class WorldScript : MonoBehaviour {
 				curPostionVector.z = monScript.CalcZPos();
 				mapMon.object_.transform.position = curPostionVector;
 				//
-				Debug.Log("Monster ZPos :" + curPostionVector.z.ToString());
+				//Debug.Log("Monster ZPos :" + curPostionVector.z.ToString());
 
 			}
 			if (curPostionVector.z < -3.0f
@@ -543,7 +558,12 @@ public class WorldScript : MonoBehaviour {
 			if (isBossStage_)
 			{
 				if (bossFightStartTime_ == 0.0f)
+				{
 					bossFightStartTime_ = Time.time;
+					GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().OnMeetBoss();
+					//BossScript script = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().GetMapObjectInstance(Constant.MapObjects.BOSS).GetComponent<BossScript>();
+					//script.changeState(Constant.BossState.Meet)
+				}
 			}
 			else
 			{
@@ -619,6 +639,8 @@ public class WorldScript : MonoBehaviour {
                 return (float)distFromCurPos * 4.0f;
 			case Constant.MapObjects.ROCK:
 				return (float)distFromCurPos * 4.0f;
+			case Constant.MapObjects.BOSS:
+				return (float)distFromCurPos * 4.0f + 0.3f;
 			default:
                 break;
         }
@@ -638,8 +660,10 @@ public class WorldScript : MonoBehaviour {
 			case Constant.MapObjects.SHOP_EXPENSIVE:
 			case Constant.MapObjects.SHOP_SANTA:
 			case Constant.MapObjects.ROCK:
+			//case Constant.MapObjects.BOSS_PIN:
                 return (float)distFromCurPos * 0.3f;
 			case Constant.MapObjects.GOAL:
+			case Constant.MapObjects.BOSS:
 				return (float)distFromCurPos * 0.3f + 0.5f;
 			default:
                 break;

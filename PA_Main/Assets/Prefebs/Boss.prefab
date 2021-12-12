@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2329390838590926444}
   - component: {fileID: 2329390838590926445}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Boss_Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2329390838590926447}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.01, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2329390839519929930}
@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2329390839295445375}
   - component: {fileID: 2329390839295445372}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Boss_Face
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2329390839295445374}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.007, y: 0.168, z: 0}
+  m_LocalPosition: {x: 0, y: 0.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2329390839519929930}
@@ -154,7 +154,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 5574372579932038973, guid: 529953aeed95dfd48a0a8a5ecbb16b36,
+  m_Sprite: {fileID: 4267731575510037861, guid: 529953aeed95dfd48a0a8a5ecbb16b36,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -176,7 +176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2329390839317230752}
   - component: {fileID: 2329390839317230753}
-  m_Layer: 11
+  m_Layer: 9
   m_Name: Boss_Face_die
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -237,7 +237,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4282442102555368290, guid: 737f85817812d6549b8ef00989f37b08,
+  m_Sprite: {fileID: -353969500706234524, guid: 737f85817812d6549b8ef00989f37b08,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 2329390839519929930}
   - component: {fileID: 2329390839519929933}
   - component: {fileID: 6907055545181659044}
-  m_Layer: 11
+  m_Layer: 9
   m_Name: Boss
   m_TagString: Boss
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ Transform:
   m_GameObject: {fileID: 2329390839519929935}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6, y: 6, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children:
   - {fileID: 2329390839295445375}
   - {fileID: 2329390838590926444}
@@ -302,6 +302,10 @@ MonoBehaviour:
   currentMovingDirection_: 0
   currentHeadDirection_: 0
   bossState_: 0
+  currentFire_: {fileID: 0}
+  bodyImages_: []
+  faceImages_: []
+  faceDieImages_: []
 --- !u!65 &6907055545181659044
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -313,5 +317,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6, y: 6, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.8452744, y: 0.53260183, z: 0.5}
+  m_Center: {x: 0.004992676, y: 0.26387104, z: 0}

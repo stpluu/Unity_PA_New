@@ -711,11 +711,12 @@ public class GameManagerScript : MonoBehaviour {
 		// start drop pin
 		for (int i = 0; i < BOSS_PIN_COUNT; ++i)
 		{
-			Vector3 pinPos = new Vector3(-3.0f + i*2.0f, 0.0f, 5.0f + 0.2f * i);
+			Vector3 pinPos = new Vector3(-6.0f + i*4.0f, 8.0f + Random.Range(0, 5), 0.0f);
 			bossPinPool_[i].transform.position = pinPos;
-			bossPinPool_[i].GetComponent<Rigidbody2D>().gravityScale = 1.0f;
+			
 			bossPinPool_[i].SetActive(true);
 		}
+		GetMapObjectInstance(Constant.MapObjects.BOSS).GetComponent<BossScript>().changeState(Constant.BossState.Meet);
 		
 	}
 
