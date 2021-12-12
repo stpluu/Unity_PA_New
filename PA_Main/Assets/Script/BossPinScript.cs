@@ -10,27 +10,36 @@ static partial class Constant
 public class BossPinScript : MonoBehaviour {
 
     public int currentDepth_;
+	private Sprite[] pinSpriteSet_;
+    private bool isPinDrop_;
 	// Use this for initialization
 	void Start () {
         
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (transform.position.y <= 0.0f)
+    }
+    private void Awake()
+    {
+        pinSpriteSet_ = Resources.LoadAll<Sprite>("Sprites/Boss/boss_point");
+    }
+    // Update is called once per frame
+    void Update () {
+        if (transform.position.y <= 0.0f && isPinDrop_ == true)
 		{
-            
-            Vector3 pos = new Vector3(transform.position.x, 0.0f, transform.position.z);
-            transform.position = pos;
-            GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, 0.0f, 0.0f), ForceMode.VelocityChange);
-		}
+            isPinDrop_ = false;
+            OnPinLanding();
+        }
 	}
     private void OnEnable()
     {
         currentDepth_ = 0;
-        GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, -6.0f, 0.0f), ForceMode.VelocityChange);
+        
+        
+        
     }
-    private void OnTriggerEnter(Collider other)
+	private void OnDisable()
+	{
+        isPinDrop_ = false;
+    }
+	private void OnTriggerEnter(Collider other)
     {
         
     }
@@ -45,13 +54,35 @@ public class BossPinScript : MonoBehaviour {
         }
     }
     */
+    public void StartDrop(Vector3 startPos)
+	{
+        GetComponent<SpriteRenderer>().sprite = Resources.LoadAll<Sprite>("Sprites/Boss/sprite_set")[33];
+        transform.position = startPos;
+        GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, -8.0f, 0.0f), ForceMode.VelocityChange);
+        isPinDrop_ = true;
+    }
     public void OnCharacterLanding()
     {
         if (currentDepth_ < Constant.needDepth)
         {
             currentDepth_++;
-            string spriteName = string.Format("Sprites/Boss/boss_point_{0:D1}", (Constant.needDepth - currentDepth_));
-            gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load(spriteName, typeof(Sprite)) as Sprite;
+           
         }
+        
+        if (currentDepth_ < pinSpriteSet_.Length)
+        {
+            string spriteName = string.Format("Sprites/Boss/boss_point_{0:D1}", (Constant.needDepth - currentDepth_));
+            GetComponent<SpriteRenderer>().sprite = pinSpriteSet_[currentDepth_];
+        }
+
+    }
+
+    private void OnPinLanding()
+	{
+        GetComponent<SpriteRenderer>().sprite = pinSpriteSet_[0];
+        Vector3 pos = new Vector3(transform.position.x, 0.0f, transform.position.z);
+        transform.position = pos;
+
+        GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, 8.0f, 0.0f), ForceMode.VelocityChange);
     }
 }

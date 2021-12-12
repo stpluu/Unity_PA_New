@@ -701,7 +701,7 @@ public class GameManagerScript : MonoBehaviour {
 		}
 		if (isBossFinished)
 		{
-			
+			Debug.Log("Boss - died");
 		}
 	}	
 	public void OnMeetBoss()
@@ -711,10 +711,9 @@ public class GameManagerScript : MonoBehaviour {
 		// start drop pin
 		for (int i = 0; i < BOSS_PIN_COUNT; ++i)
 		{
-			Vector3 pinPos = new Vector3(-6.0f + i*4.0f, 8.0f + Random.Range(0, 5), 0.0f);
-			bossPinPool_[i].transform.position = pinPos;
-			
+			Vector3 pinPos = new Vector3(-5.4f + i*3.6f, 8.0f + Random.Range(0, 5), 0.0f);
 			bossPinPool_[i].SetActive(true);
+			bossPinPool_[i].GetComponent<BossPinScript>().StartDrop(pinPos);
 		}
 		GetMapObjectInstance(Constant.MapObjects.BOSS).GetComponent<BossScript>().changeState(Constant.BossState.Meet);
 		
@@ -726,7 +725,7 @@ public class GameManagerScript : MonoBehaviour {
 		{
 			for (int i = 0; i < BOSS_PIN_COUNT; ++i)
 			{
-				if (Mathf.Abs(charPos.x - bossPinPool_[i].transform.position.x) < 0.2f)
+				if (Mathf.Abs(charPos.x - bossPinPool_[i].transform.position.x) < 0.35f)
 				{
 					bossPinPool_[i].GetComponent<BossPinScript>().OnCharacterLanding();
 				}

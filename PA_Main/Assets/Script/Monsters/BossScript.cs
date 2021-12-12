@@ -184,7 +184,7 @@ public class BossScript : MonoBehaviour {
 	}
 	public void procAttackDelay()
 	{
-		if (Time.time - stateTime_ > 1.0f)
+		if (Time.time - stateTime_ > 1.3f)
 		{
 			changeState(Constant.BossState.Moving);
 		}
@@ -285,7 +285,7 @@ public class BossScript : MonoBehaviour {
 		if (currentFire_)
 		{
 			//currentFire_;
-			currentFire_.GetComponent<BossFireScript>().startMove(new Vector3(getAttackDirection() * 1.15f, -1.0f, 0.0f));
+			currentFire_.GetComponent<BossFireScript>().startMove(new Vector3(getAttackDirection() * 1.5f, -1.1f, 0.0f));
 			
 			
 		}
