@@ -296,12 +296,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1bd3c2747c57b04d84b56753fe8e21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateTime_: 0
+  stateTime_: 56.86886
   dieTime_: 0
   currentHp_: 0
   currentMovingDirection_: 0
   currentHeadDirection_: 0
-  bossState_: 0
+  bossState_: 6
   currentFire_: {fileID: 0}
   bodyImages_: []
   faceImages_: []

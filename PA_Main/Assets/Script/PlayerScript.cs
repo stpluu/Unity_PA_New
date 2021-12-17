@@ -197,6 +197,7 @@ public class PlayerScript : MonoBehaviour {
 					}
 				}
 				break;
+			case CharacterStates.CEREMONY:
 			case CharacterStates.GOAL_MOVING:
 				{
 					if (Mathf.Abs(characterPosition_.x) < 0.3f)
@@ -335,6 +336,7 @@ public class PlayerScript : MonoBehaviour {
 				}
 				break;
 			case CharacterStates.GOAL_MOVING:
+			case CharacterStates.CEREMONY:
 				{
 					SetSpeed(0);
 					if (characterState_ == CharacterStates.JUMP_DOWN
@@ -746,14 +748,19 @@ public class PlayerScript : MonoBehaviour {
 
 	public void OnCollideRock(GameObject collideObj)
 	{
-		OnDie();
+		//Todo : 무적/아이템 활성화상태면 통과
+		
 		Debug.Log("Rock Collide : " + collideObj.transform.position.z.ToString() + "player : "
 			+ gameObject.transform.position.z.ToString());
+
+		OnDie();
 	}
 
 	public void OnDie()
 	{
 		changeCharacterState(CharacterStates.DIE);
+		gameManagerScript_.onDie(0);
+
 	}
 
 	// animation event func
@@ -785,9 +792,17 @@ public class PlayerScript : MonoBehaviour {
 	}
 	/////////////////////////////
 	// goal
-	public void OnGoal()
+	public void OnGoal(bool isBossClear)
 	{
-		changeCharacterState(CharacterStates.GOAL_MOVING);
+		if (isBossClear)
+		{
+			changeCharacterState(CharacterStates.CEREMONY);
+		}
+		else
+		{
+			changeCharacterState(CharacterStates.GOAL_MOVING);
+		}
+		
 	}
 
 	private int getMaxSpeed()

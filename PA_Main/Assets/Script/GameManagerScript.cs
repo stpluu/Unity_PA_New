@@ -179,6 +179,9 @@ public class GameManagerScript : MonoBehaviour {
 		goalObject_.SetActive(false);
 		bossObject_ = Instantiate(boss_, Vector3.zero, Quaternion.identity) as GameObject;
 		bossObject_.SetActive(false);
+		bossHole_ = Instantiate(bossHole_, Vector3.zero, Quaternion.identity) as GameObject;
+		bossHole_.SetActive(false);
+
 		for (int i = 0; i < FISH_INSCREEN_MAX_NUM; ++i)
 		{
 			fishPool_[i] = Instantiate(fish_, Vector3.zero, Quaternion.identity) as GameObject;
@@ -276,7 +279,9 @@ public class GameManagerScript : MonoBehaviour {
 		{
 			ProcShowingMap();
 		}
-		if (bInBossFight_)
+		if (bInBossFight_
+			&& bossObject_.GetComponent<BossScript>().bossState_ != Constant.BossState.Die
+			&& bossObject_.GetComponent<BossScript>().bossState_ != Constant.BossState.Deactive)
 		{
 			ProcBossFight();
 		}
@@ -434,6 +439,8 @@ public class GameManagerScript : MonoBehaviour {
 				}
 			case Constant.MapObjects.BOSS:
 				return bossObject_;
+			case Constant.MapObjects.BOSS_HOLE:
+				return bossHole_;
 			case Constant.MapObjects.BOSS_PIN:
 				foreach (GameObject obj in bossPinPool_)
 				{
@@ -527,12 +534,37 @@ public class GameManagerScript : MonoBehaviour {
 	{
 		stageFinishTime_ = Time.time;
 		//GameObject.FindWithTag("Player").GetComponent<Animator>().SetTrigger("trGoal");
-		playerScript_.OnGoal();
+		//if (bossFightTime_ > 0.0f)
+		//{
+		//	bossObject_.GetComponent<BossScript>().changeState(Constant.BossState.Die);
+		//}
+		//else
+		{
+			playerScript_.OnGoal(bossFightTime_ > 0.0f);
+		}
+		
 		//playerScript_.SetSpeed(0);
 		Debug.Log("FinishTime : " + stageFinishTime_.ToString());
 		bInGoal_ = true;
+		
 	}
+	public void OnBossDie()
+	{
+		stageFinishTime_ = Time.time;
+		//GameObject.FindWithTag("Player").GetComponent<Animator>().SetTrigger("trGoal");
+		//if (bossFightTime_ > 0.0f)
+		bossObject_.GetComponent<BossScript>().changeState(Constant.BossState.Die);
+		//}
+		//else
+		//{
+		//	playerScript_.OnGoal(bossFightTime_ > 0.0f);
+		//}
 
+		//playerScript_.SetSpeed(0);
+		Debug.Log("Boss Die Time : " + stageFinishTime_.ToString());
+		//bInGoal_ = true;
+
+	}
 	public void OnPauseButton()
 	{
 		GameObject menu = GameObject.Find("UI").transform.Find("PauseMenu").gameObject;
@@ -633,6 +665,16 @@ public class GameManagerScript : MonoBehaviour {
 	public void onDie(int dieReason)
 	{
 		bDie_ = true;
+		//모든 몬스터/보스 stop
+		for (int i = 0; i < MONSTER_INSCREEN_MAX_NUM; ++i)
+			monsterBallPool_[i].GetComponent<Animator>().speed = 0;
+		for (int i = 0; i < BOSS_FIRE_MAX_COUNT; ++i)
+			bossFirePool_[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
+		for (int i = 0; i < HEART_INSCREEN_MAX_NUM; ++i)
+		{
+			heartPool_[i].SetActive(false);
+		}
+		
 	}
 	public void loadStage(int level)
 	{
@@ -687,21 +729,25 @@ public class GameManagerScript : MonoBehaviour {
 	public void ProcBossFight()
 	{
 		playerScript_.speed_ = 0;
-		bool isBossFinished = true;
+		bool isBossFinished = false;
+		int finishedPin = 0;
 		for (int i = 0; i < BOSS_PIN_COUNT; ++i)
 		{
-			if (bossPinPool_[i].GetComponent<BossPinScript>().currentDepth_ < Constant.needDepth)
+			if (bossPinPool_[i].GetComponent<BossPinScript>().currentDepth_ >= Constant.needDepth)
 			{
-				isBossFinished = false;
+				finishedPin++;
 			}
 		}
-		if (boss_.GetComponent<BossScript>().currentHp_ > 0)
+		if (finishedPin == BOSS_PIN_COUNT)
+			isBossFinished = true;
+		if (bossObject_.GetComponent<BossScript>().currentHp_ <= 0)
 		{
-			isBossFinished = false;
+			isBossFinished = true;
 		}
 		if (isBossFinished)
 		{
 			Debug.Log("Boss - died");
+			OnBossDie();
 		}
 	}	
 	public void OnMeetBoss()

@@ -56,6 +56,8 @@ public class MonsterScript : MonoBehaviour {
 		enabledTime_ = Time.time;
 		dieTime_ = 0.0f;
 		monsterState_ = Constant.MonsterState.Active;
+		if (GetComponent<Animator>() != null)
+			GetComponent<Animator>().speed = 1.0f;
 	}
 	private void OnDisable()
 	{
@@ -76,6 +78,7 @@ public class MonsterScript : MonoBehaviour {
 			Debug.Log("Monster : Player col ");
 			GameObject.Find("Player").GetComponent<PlayerScript>().OnCollideRock(gameObject);
 			GetComponent<BoxCollider>().enabled = false;
+			
 		}
 		else if (other.CompareTag("Bullet"))
 		{

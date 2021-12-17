@@ -10,9 +10,9 @@ public class MonsterBallScript : MonsterScript {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	//void Update () {
 		
-	}
+	//}
 
 	private void FixedUpdate()
 	{

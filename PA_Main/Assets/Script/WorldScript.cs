@@ -22,6 +22,7 @@ static partial class Constant
 		FISH_HOLE,
 		GOAL,
 		BOSS,
+		BOSS_HOLE,
 		ROCK,
 		TREE,
 		WARP,

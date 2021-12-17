@@ -49,6 +49,8 @@ public class BossScript : MonoBehaviour {
 	public Sprite[] bodyImages_;
 	public Sprite[] faceImages_;
 	public Sprite[] faceDieImages_;
+
+	private GameObject bossHole_;
 	// Use this for initialization
 	void Start () {
 
@@ -57,11 +59,7 @@ public class BossScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//UpdatePosition();
-		if (bossState_ == Constant.BossState.Die
-			&& Time.time - dieTime_ > 8.0f)
-		{
-			gameObject.SetActive(false);
-		}
+		
 		switch(bossState_)
 		{
 			case Constant.BossState.Meet:
@@ -77,6 +75,7 @@ public class BossScript : MonoBehaviour {
 				procAttackDelay();
 			break;
 			case Constant.BossState.Die:
+				procDie();
 				break;
 			default:
 			break;
@@ -189,6 +188,26 @@ public class BossScript : MonoBehaviour {
 			changeState(Constant.BossState.Moving);
 		}
 	}
+
+	public void procDie()
+	{
+		if (Time.time - stateTime_ > 3.5f)
+		{
+			//TODO : change character ceremony
+			changeState(Constant.BossState.Deactive);
+			//GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().OnGoal();
+			GameObject.FindWithTag("Player").GetComponent<PlayerScript>().OnGoal(true);
+			//GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().goNextStage();
+		}
+		else if (Time.time - stateTime_ > 1.5f)
+		{
+			float currentYPos = (float)((int)((Time.time - stateTime_ - 1.5f) * 1000) / 50 ) * -0.2f;
+			transform.position = new Vector3(transform.position.x, currentYPos, transform.position.z);
+			transform.GetChild(2).GetComponent<SpriteRenderer>().flipX = Mathf.Round(Time.time - stateTime_) > Time.time - stateTime_;
+			
+
+		}
+	}
 	private void OnEnable()
 	{
 		Debug.Log("Boss - Enabled");
@@ -197,7 +216,7 @@ public class BossScript : MonoBehaviour {
 		transform.GetChild(0).gameObject.SetActive(true);
 		transform.GetChild(2).gameObject.SetActive(false);
 		GetComponent<BoxCollider>().enabled = false;
-		currentHp_ = 30;
+		currentHp_ = 10;
 		dieTime_ = 0.0f;
 		
 		faceImages_ = Resources.LoadAll<Sprite>("Sprites/Boss/boss_face");
@@ -213,6 +232,7 @@ public class BossScript : MonoBehaviour {
 		GetComponent<BoxCollider>().enabled = false;
 
 		bossState_ = Constant.BossState.Deactive;
+		//bossHole_.SetActive(false);
 	}
 
 	private void OnStateExit()
@@ -293,7 +313,12 @@ public class BossScript : MonoBehaviour {
 	public void OnDie()
 	{
 		transform.GetChild(2).gameObject.SetActive(true);
-		transform.GetChild(0).gameObject.SetActive(false);
+		changeHeadImage(BossHeadImage.Neutral);
+		//transform.GetChild(0).gameObject.SetActive(false);
+		bossHole_ = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().GetMapObjectInstance(Constant.MapObjects.BOSS_HOLE);
+		bossHole_.transform.position = new Vector3(0.0f, 0.0f, transform.position.z + 0.2f);
+		bossHole_.SetActive(true);
+
 	}
 	public void OnCollideBullet(Collider other)
 	{
