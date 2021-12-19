@@ -554,6 +554,10 @@ public class GameManagerScript : MonoBehaviour {
 		//GameObject.FindWithTag("Player").GetComponent<Animator>().SetTrigger("trGoal");
 		//if (bossFightTime_ > 0.0f)
 		bossObject_.GetComponent<BossScript>().changeState(Constant.BossState.Die);
+		for (int i = 0; i < BOSS_FIRE_MAX_COUNT; ++i)
+		{
+			bossFirePool_[i].SetActive(false);
+		}
 		//}
 		//else
 		//{

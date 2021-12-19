@@ -1,20 +1,19 @@
 <stage>
-tile=spring_forest
+tile=cave
 time=200
-distance=600
-boss=1
+distance=700
 </stage>
 // �������� ����
 // ��Ÿ���� ��ġ(ĳ���Ϳ� ��� ��ġ ����, �����δ� �����Ÿ� ���� ����), ������Ʈ ����, x�� ��ġ
 <objects>
-45,fish_hole,-1
-51,fish_hole,1
-57,fish_hole,-1
-63,fish_hole,1
-69,fish_hole,-1
-75,fish_hole,1
-91,heart,0
-93,fish_hole,-1
+45,crack,-1
+51,crack,1
+57,crack,-1
+63,crack,1
+69,crack,-1
+75,crack,1
+//91,heart,0
+93,crack,-1
 99,fish_hole,1
 105,fish_hole,-1
 111,fish_hole,1
@@ -39,13 +38,13 @@ boss=1
 274,shop_expensive,1
 286,fish_hole,1
 297,large_hole,-1
-300,heart,0,
+//300,heart,0,
 309,fish_hole,1
 315,fish_hole,1
 327,large_hole,-1
 339,fish_hole,1
 353,large_hole,-1
-363,warp_hole,0
+//363,warp_hole,0
 375,large_hole,-1
 387,fish_hole,1
 399,large_hole,-1
@@ -69,7 +68,7 @@ boss=1
 537,crack,-1
 543,crack,1
 565,crack,-1
-600,boss,0
+700,goal,0
 </objects>
 <monsters>
 </monsters>

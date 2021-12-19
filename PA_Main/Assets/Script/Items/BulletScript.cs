@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public partial class Constant
 {
-	public const float BulletMoveSpeed = 6.0f;
-	public const float BulletMaxDistance = 5.0f;
+	public const float BulletMoveSpeed = 5.5f;
+	public const float BulletMaxDistance = 4.0f;
 }
 ;
 public class BulletScript : MonoBehaviour {

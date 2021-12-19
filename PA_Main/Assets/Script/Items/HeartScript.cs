@@ -14,7 +14,7 @@ public partial class Constant
 	};
 	public const float HeartMoveSpeedX = 1.0f;
 	public const float HeartInitialPosX = -7.0f;
-	public const float HeartCosMoveY = 1.3f;
+	public const float HeartCosMoveY = 0.8f;
 };
 
 public class HeartScript : MonoBehaviour {
@@ -45,7 +45,7 @@ public class HeartScript : MonoBehaviour {
 		if (isMoveLeft_)
 			xPos *= -1.0f;
 		transform.position = startPosition_ + new Vector3(xPos
-			, Mathf.Sin((Time.time - createTime_) * 2) * Constant.HeartCosMoveY, 0.0f);
+			, Mathf.Sin((Time.time - createTime_) * 1.2f) * Constant.HeartCosMoveY, 0.0f);
 		if (transform.position.x < -8.0f
 			|| transform.position.x > 8.0f)
 			gameObject.SetActive(false);

@@ -118,6 +118,7 @@ public class PlayerScript : MonoBehaviour {
         StartCoroutine("UpdateCharacterPosition");
 		//StartCoroutine("UpdateSpeed");
 		SetSpeed(Constant.Speed_Min);
+		GetComponent<BoxCollider>().size = new Vector3(0.7f, 0.7f, 0.5f);
 	}
 
 	
@@ -197,7 +198,6 @@ public class PlayerScript : MonoBehaviour {
 					}
 				}
 				break;
-			case CharacterStates.CEREMONY:
 			case CharacterStates.GOAL_MOVING:
 				{
 					if (Mathf.Abs(characterPosition_.x) < 0.3f)
@@ -336,7 +336,6 @@ public class PlayerScript : MonoBehaviour {
 				}
 				break;
 			case CharacterStates.GOAL_MOVING:
-			case CharacterStates.CEREMONY:
 				{
 					SetSpeed(0);
 					if (characterState_ == CharacterStates.JUMP_DOWN
@@ -348,6 +347,13 @@ public class PlayerScript : MonoBehaviour {
 				{
 					movingDirection_ = Constant.Direction_Neutral;
 					animator_.SetTrigger("trGoal");
+				}
+				break;
+			case CharacterStates.CEREMONY:
+				{
+					movingDirection_ = Constant.Direction_Neutral;
+					gameObject.GetComponent<BoxCollider>().size = new Vector3(0.0f, 0.7f, 0.5f);
+					animator_.SetTrigger("trBossDie");
 				}
 				break;
 			case CharacterStates.DIE:
@@ -535,6 +541,8 @@ public class PlayerScript : MonoBehaviour {
 			}
 			if (characterState_ == CharacterStates.GOAL)
 				characterPosition_.x = 0.0f;
+			if (characterState_ == CharacterStates.CEREMONY)
+				characterPosition_.x = 0.0f;
             //특정 아이템이 있는 경우 보정 필요함
             characterPosition_.x += Constant.Speed_X_Lv1 * movingDirection_;
             if (characterPosition_.x > Constant.Position_VerticalMoveLimit_Right)
@@ -578,7 +586,9 @@ public class PlayerScript : MonoBehaviour {
 			{
 				characterPosition_.y = -1.6f + (Time.time - stateStartTime_) * 2;
 			}
-			
+			else if (characterState_ == CharacterStates.CEREMONY)
+				characterPosition_.y = -0.2f;
+
 			float shadowScale = Mathf.Clamp(Constant.Position_jumpHeightLv2 
 											- Mathf.Min(characterPosition.y, Constant.Position_jumpHeightLv2)
 											, 0.2f, 1.0f);
@@ -781,11 +791,20 @@ public class PlayerScript : MonoBehaviour {
 	{
 		gameManagerScript_.OnRestratButton();
 	}
+
+	public void EventBossCeremonyAniFlipRight()
+	{
+		transform.localScale = new Vector3(1.7f, transform.localScale.y, transform.localScale.z);
+	}
+	public void EventBossCeremonyAniFlipLeft()
+	{
+		transform.localScale = new Vector3(-1.7f, transform.localScale.y, transform.localScale.z);
+	}
 	/// <summary>
 	/// /////////////////////////////
 	/// </summary>
 	///
-	
+
 	public void OnExitFromHole() // shop, warp에서 나왔을때
 	{
 		changeCharacterState(CharacterStates.OUT_FROM_THE_HOLE);

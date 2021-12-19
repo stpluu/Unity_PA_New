@@ -314,6 +314,7 @@ public class BossScript : MonoBehaviour {
 	{
 		transform.GetChild(2).gameObject.SetActive(true);
 		changeHeadImage(BossHeadImage.Neutral);
+		changeBodyImage(BossBodyImage.Neutral);
 		//transform.GetChild(0).gameObject.SetActive(false);
 		bossHole_ = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManagerScript>().GetMapObjectInstance(Constant.MapObjects.BOSS_HOLE);
 		bossHole_.transform.position = new Vector3(0.0f, 0.0f, transform.position.z + 0.2f);
@@ -325,6 +326,7 @@ public class BossScript : MonoBehaviour {
 		currentHp_--;
 	
 		other.GetComponent<BulletScript>().OnHitObject();
+		
 	}
 
 	
